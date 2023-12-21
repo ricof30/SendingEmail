@@ -35,7 +35,7 @@
 						<div class="alert alert-success"><?php echo $success_message; ?></div>
 					<?php } ?>
 					<?php if (isset($error_message)) { ?>
-						<div class="alert alert-danger"><?php echo $error_message; ?></div>
+						<div class="alert alert-danger text-center" id="message-container"><?php echo $error_message; ?></div>
 					<?php } ?>
 					<form action="<?= site_url('check'); ?>" method="post" >
 						<div class="form-group">
@@ -51,5 +51,11 @@
 			</div>
 		</div>
 	</div>
+	<script>
+    // Add this script to handle the timed disappearance of the message
+    setTimeout(function() {
+        document.getElementById('message-container').style.display = 'none';
+    }, 2000); // 2000 milliseconds = 2 seconds
+</script>
 </body>
 </html>

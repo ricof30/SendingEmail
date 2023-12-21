@@ -39,50 +39,112 @@ class Welcome extends Controller {
 		$this->call->view('account_verify');
 	}
 
-	public function register_val(){
-		$this->form_validation
-			->name('name')
-				->required()
-				->min_length(3)
-				->max_length(20)
-			->name('password')
-				->required()
-				->min_length(8)
-			->name('confpassword')
-				->matches('password')
-				->required()
-				->min_length(8)
-			->name('email')
-				->valid_email();
-				if ($this->form_validation->run() == FALSE)
-				{
-					$this->call->view('register');
-				
-				}
-				else
-				{
+	public function viewEmail(){
+		$this->call->view('email_form');
+	}
 
-					$verificationCode = substr(md5(rand()), 0, 8);
-					$is_verify = FALSE;
+	public function register_val()
+{
+    // Validate form input
+    $this->form_validation
+        ->name('name')
+        ->required()
+        ->min_length(3)
+        ->max_length(20)
+        ->name('password')
+        ->required()
+        ->min_length(8)
+        ->name('confpassword')
+        ->matches('password')
+        ->required()
+        ->min_length(8)
+        ->name('email')
+        ->valid_email();
 
-					$this->User_model->insert(
-						$this->io->post('name'),
-						$this->io->post('password'),
-						$this->io->post('email'),
-						$verificationCode,
-						$is_verify 
-					);
-		
-					$data['email'] = $this->io->post('email');
-					$this->call->view('account_verify',$data);
+    // Check if validation fails
+    if ($this->form_validation->run() == FALSE) {
+        $this->call->view('register');
+    } else {
+        // Check if email already exists
+        $existingEmail = $this->User_model->get_user_by_email($this->io->post('email'));
 
-					$verify = $this->getRegisteredEmail();
-					$this->session->set_userdata('registered_email', $this->io->post('email'));
-				
-					$this->sendVerificationEmail($verify, $verificationCode);
-				
-				}
+        if ($existingEmail) {
+            // Email already registered, display an error
+            $this->call->view('register', ['error_message' => 'Email already registered']);
+        } else {
+            // Generate verification code
+            $verificationCode = substr(md5(rand()), 0, 8);
+            $is_verify = FALSE;
+            $email = $this->io->post('email');
+
+            // Insert new user
+            $this->User_model->insert(
+                $this->io->post('name'),
+                $this->io->post('password'),
+                $email,
+                $verificationCode,
+                $is_verify
+            );
+
+            // Set data for the view
+            $data['email'] = $email;
+
+            // Load the account_verify view
+            $this->call->view('account_verify', $data);
+
+            // Set registered email in session
+            $this->session->set_userdata('registered_email', $email);
+
+            // Send verification email
+            $this->sendVerificationEmail($email, $verificationCode);
+        }
     }
+}
+
+
+	// public function register_val(){
+	// 	$this->form_validation
+	// 		->name('name')
+	// 			->required()
+	// 			->min_length(3)
+	// 			->max_length(20)
+	// 		->name('password')
+	// 			->required()
+	// 			->min_length(8)
+	// 		->name('confpassword')
+	// 			->matches('password')
+	// 			->required()
+	// 			->min_length(8)
+	// 		->name('email')
+	// 			->valid_email();
+	// 			if ($this->form_validation->run() == FALSE)
+	// 			{
+	// 				$this->call->view('register');
+				
+	// 			}
+	// 			else
+	// 			{
+	// 				$verificationCode = substr(md5(rand()), 0, 8);
+	// 				$is_verify = FALSE;
+	// 				$email =$this->io->post('email');
+	// 				$this->User_model->insert(
+	// 					$this->io->post('name'),
+	// 					$this->io->post('password'),
+	// 					$email,
+	// 					$verificationCode,
+	// 					$is_verify 
+	// 				);
+		
+	// 				$data['email'] = $this->io->post('email');
+	// 				$this->call->view('account_verify',$data);
+
+	// 				$verify = $this->getRegisteredEmail();
+	// 				$this->session->set_userdata('registered_email', $this->io->post('email'));
+				
+	// 				$this->sendVerificationEmail($email, $verificationCode);
+				
+	// 			}
+    // }
 
 	public function getRegisteredEmail() {
 		return $this->session->userdata('registered_email');
@@ -113,6 +175,7 @@ class Welcome extends Controller {
 					if ($password === $user['password']) {
 						if ($user['is_verified']) {
 							// User is verified, proceed to the dashboard
+							$_SESSION['email'] = $this->io->post('email');
 							$this->call->view('email_form');
 
 						} else {
@@ -135,7 +198,7 @@ class Welcome extends Controller {
 		$mail = new PHPMailer(true);
 
 			$to = $_POST["to"];
-			$from = $_POST["from"];
+			$from = $this->session->userdata('email');
 				   
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
@@ -145,7 +208,7 @@ class Welcome extends Controller {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
         $mail->Port = 587;  
 
-        $mail->setFrom($_POST['from'], $from); 
+        $mail->setFrom($from); 
         $mail->addAddress($_POST['to'], $to);  
 
       

@@ -31,10 +31,10 @@
               <?php $LAVA =& lava_instance(); ?>
               <?php echo $LAVA->form_validation->errors(); ?>    
               <?php if (isset($error_message)) { ?>
-                 <div class="alert alert-danger"><?php echo $error_message; ?></div>
+                 <div class="alert alert-danger text-center" id="message-container"><?php echo $error_message; ?></div>
                 <?php } ?>
                 <?php if (isset($success_message)) { ?>
-                 <div class="alert alert-success"><?php echo $success_message; ?></div>
+                 <div class="alert alert-success text-center" id="message-container"><?php echo $success_message; ?></div>
                 <?php } ?>
               <form action="<?= site_url('validate_login'); ?> " method="post">
                 <div class="form-group">
@@ -54,17 +54,14 @@
           </div>
         </div>
       </div>
-      <!-- content-wrapper ends -->
     </div>
-    <!-- page-body-wrapper ends -->
   </div>
-  <!-- container-scroller -->
-  <!-- plugins:js -->
+  <script>
+    setTimeout(function() {
+        document.getElementById('message-container').style.display = 'none';
+    }, 2000);
+</script>
   <script src="../../vendors/js/vendor.bundle.base.js"></script>
-  <!-- endinject -->
-  <!-- Plugin js for this page -->
-  <!-- End plugin js for this page -->
-  <!-- inject:js -->
   <script src="../public/js/off-canvas.js"></script>
   <script src="../public/js/hoverable-collapse.js"></script>
   <script src="../public/js/template.js"></script>

@@ -1,5 +1,10 @@
 .DS_Store
 
+app/vendor/*
+
+runtime/*
+!runtime/.htaccess
+!runtime/index.html
 
 # IDE Files
 #-------------------------

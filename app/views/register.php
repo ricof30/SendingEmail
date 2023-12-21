@@ -29,6 +29,9 @@
               <h4 class="text-center">New here?</h4>
               <h6 class="font-weight-light text-center">Signing up is easy. It only takes a few steps</h6>            
               <?php $LAVA =& lava_instance(); ?>
+              <?php if (isset($error_message)) { ?>
+                 <div class="alert alert-danger text-center" id="message-container"><?php echo $error_message; ?></div>
+                <?php } ?>
               <?php echo $LAVA->form_validation->errors(); ?>         
              <form action="<?= site_url('validate_reg'); ?> " method="post">
                 <div class="form-group">
@@ -54,17 +57,14 @@
           </div>
         </div>
       </div>
-      <!-- content-wrapper ends -->
     </div>
-    <!-- page-body-wrapper ends -->
   </div>
-  <!-- container-scroller -->
-  <!-- plugins:js -->
+  <script>
+    setTimeout(function() {
+        document.getElementById('message-container').style.display = 'none';
+    }, 2000); 
+</script>
   <script src="../../vendors/js/vendor.bundle.base.js"></script>
-  <!-- endinject -->
-  <!-- Plugin js for this page -->
-  <!-- End plugin js for this page -->
-  <!-- inject:js -->
   <script src="../../js/off-canvas.js"></script>
   <script src="../../js/hoverable-collapse.js"></script>
   <script src="../../js/template.js"></script>

@@ -33,20 +33,20 @@
                     <?php $LAVA =& lava_instance(); ?>
                     <?php echo $LAVA->form_validation->errors(); ?>    
                     <?php if (isset($error_message)) { ?>
-                        <div class="alert alert-danger"><?php echo $error_message; ?></div>
+                        <div class="alert alert-danger text-center" id="message-container"><?php echo $error_message; ?></div>
                     <?php } ?>
                     <?php if (isset($success_message)) { ?>
-                        <div class="alert alert-success"><?php echo $success_message; ?></div>
+                        <div class="alert alert-success text-center" id="message-container" ><?php echo $success_message; ?></div>
                     <?php } ?>
                     <form action="<?= site_url('email'); ?>" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="to">To:</label>
                             <input type="email" class="form-control" id="to" name="to" required>
                         </div>
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="to">From:</label>
                             <input type="email" class="form-control" id="to" name="from" required>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                             <label for="subject">Subject:</label>
                             <input type="text" class="form-control" id="subject" name="subject" required>
@@ -68,7 +68,11 @@
             </div>
         </div>
     </div>
-    <!-- Include Bootstrap JS and jQuery -->
+    <script>
+    setTimeout(function() {
+        document.getElementById('message-container').style.display = 'none';
+    }, 2000); 
+</script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

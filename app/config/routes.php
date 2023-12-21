@@ -52,4 +52,5 @@ $router->post('/validate_reg', 'Welcome::register_val');
 $router->post('/validate_login', 'Welcome::login_val');
 $router->post('/email', 'Welcome::email');
 $router->get('/verify', 'Welcome::account');
+$router->get('/viewEmail', 'Welcome::viewEmail');
 $router->post('/check', 'Welcome::check');
